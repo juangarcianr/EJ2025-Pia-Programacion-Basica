@@ -1,1 +1,92 @@
+# Acceder a tu token
+
+# ANTES TENER INSTALADO REQUEST PONER ESTO EN LA CONSOLA
+# pip install requests
+# python -m pip install requests
+# EJECUTAR CON LA PALABRA PYTHON ANTES 
+
+# Importar librerías
+import requests
+import json
+
+# Hacer la petición
+TOKEN = TOKEN
+url = f"https://api.waqi.info/feed/here/?token={TOKEN}"
+respuesta = requests.get(url)
+data = respuesta.json()
+
+# Guardar la respuesta en un archivo
+with open(r" AQUI PONER SU PROPIA RUTA Y EL NOMBRE DEL ARCHIVO .TXT", "w") as busqueda:
+    json.dump(data, busqueda, indent=4, ensure_ascii=False)
+
+# Datos generales
+print(f"📍 Ciudad: {data['data']['city']['name']}")
+print(f"🗓️ Fecha: {data['data']['time']['iso']}")
+print(f"🌫️ AQI actual (pm2.5): {data['data']['aqi']}")
+print(f"☁️ Contaminante dominante: {data['data']['dominentpol']}")
+
+# Datos de contaminantes actuales
+print("\n📊 Contaminantes actuales:")
+for contaminante, valor in data['data']['iaqi'].items():
+    print(f"  {contaminante.upper()}: {valor['v']}")
+
+# Pronóstico de PM2.5
+print("\n🔮 Pronóstico PM2.5 para los próximos días:")
+for dia in data['data']['forecast']['daily']['pm25']:
+    print(f"  {dia['day']}: promedio {dia['avg']}, máx {dia['max']}, mín {dia['min']}")
+
+----------------------------------------------------------------------------------------------------------------------------------------
+# ESTO SE IMPRIME
+
+📊 Contaminantes actuales:
+  CO: 4.3
+  H: 79
+  NO2: 23.2
+  O3: 21.6
+  P: 1019.7
+  PM10: 31
+  PM25: 42
+  SO2: 2.8
+  T: 20.2
+  W: 1
+  WG: 4.5
+
+🔮 Pronóstico PM2.5 para los próximos días:
+  2025-05-07: promedio 50, máx 69, mín 28
+  2025-05-08: promedio 29, máx 49, mín 11
+  2025-05-09: promedio 27, máx 40, mín 13
+  2025-05-10: promedio 36, máx 57, mín 27
+  2025-05-11: promedio 40, máx 52, mín 34
+  2025-05-12: promedio 55, máx 75, mín 38
+  2025-05-13: promedio 60, máx 108, mín 52
+  2025-05-14: promedio 61, máx 132, mín 52
+
+C:\Users\Dell\Documents\PIA>python piaprueba.py
+📍 Ciudad: Universidad, Monterrey, Nuevo León, Mexico
+🗓️ Fecha: 2025-05-09T11:00:00-05:00
+🌫️ AQI actual (pm2.5): 42
+☁️ Contaminante dominante: pm25
+
+📊 Contaminantes actuales:
+  CO: 4.3
+  H: 79
+  NO2: 23.2
+  O3: 21.6
+  P: 1019.7
+  PM10: 31
+  PM25: 42
+  SO2: 2.8
+  T: 20.2
+  W: 1
+  WG: 4.5
+
+🔮 Pronóstico PM2.5 para los próximos días:
+  2025-05-07: promedio 50, máx 69, mín 28
+  2025-05-08: promedio 29, máx 49, mín 11
+  2025-05-09: promedio 27, máx 40, mín 13
+  2025-05-10: promedio 36, máx 57, mín 27
+  2025-05-11: promedio 40, máx 52, mín 34
+  2025-05-12: promedio 55, máx 75, mín 38
+  2025-05-13: promedio 60, máx 108, mín 52
+  2025-05-14: promedio 61, máx 132, mín 52
 
