@@ -1,3 +1,34 @@
-hola
-print("Hola!!")
+# Acceder a tu token
+token_aqicn = open(r"C:\Users\juang\Documents\FCFM\2do Semestre\Programacion Basica\PIA\token_aqicn.txt", "r")
+token = token_aqicn.read().strip()  # strip() para quitar saltos de línea si los hay
+token_aqicn.close()
 
+# Importar librerías
+import requests
+import pandas as pd
+import json
+
+# Hacer la petición
+url = f"https://api.waqi.info/feed/here/?token={token}"
+respuesta = requests.get(url)
+data = respuesta.json()
+
+# Guardar la respuesta en un archivo
+with open(r"C:\Users\juang\Documents\FCFM\2do Semestre\Programacion Basica\PIA\busqueda_prueba.txt", "w") as busqueda:
+    json.dump(data, busqueda, indent=4, ensure_ascii=False)
+
+# Datos generales
+print(f"📍 Ciudad: {data['data']['city']['name']}")
+print(f"🗓️ Fecha: {data['data']['time']['iso']}")
+print(f"🌫️ AQI actual (pm2.5): {data['data']['aqi']}")
+print(f"☁️ Contaminante dominante: {data['data']['dominentpol']}")
+
+# Datos de contaminantes actuales
+print("\n📊 Contaminantes actuales:")
+for contaminante, valor in data['data']['iaqi'].items():
+    print(f"  {contaminante.upper()}: {valor['v']}")
+
+# Pronóstico de PM2.5
+print("\n🔮 Pronóstico PM2.5 para los próximos días:")
+for dia in data['data']['forecast']['daily']['pm25']:
+    print(f"  {dia['day']}: promedio {dia['avg']}, máx {dia['max']}, mín {dia['min']}")
