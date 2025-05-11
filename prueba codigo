@@ -1,34 +1,51 @@
-# Acceder a tu token
-token_aqicn = open(r"C:\Users\juang\Documents\FCFM\2do Semestre\Programacion Basica\PIA\token_aqicn.txt", "r")
-token = token_aqicn.read().strip()  # strip() para quitar saltos de línea si los hay
-token_aqicn.close()
+# cambiar la ruta a en la que se tiene guardado el toquen !!!!!!!!!!!!!!
+# y en la que se guarda los datos en crudo
+# y tener instalada la libreria de requests
 
-# Importar librerías
+# PARA IDENTIFICAR LA UID DE CADA ESTACION EN LAS CIUDADES DE LA ZONA METROPOLITANA
+
 import requests
-import pandas as pd
-import json
 
-# Hacer la petición
-url = f"https://api.waqi.info/feed/here/?token={token}"
-respuesta = requests.get(url)
-data = respuesta.json()
+def buscar_aqi(city_name):
+    
+    # Leer el token
+    with open(r"C:\Users\juang\Documents\FCFM\2do Semestre\Programacion Basica\PIA\token_aqicn.txt", "r") as f:
+        token = f.read().strip()
 
-# Guardar la respuesta en un archivo
-with open(r"C:\Users\juang\Documents\FCFM\2do Semestre\Programacion Basica\PIA\busqueda_prueba.txt", "w") as busqueda:
-    json.dump(data, busqueda, indent=4, ensure_ascii=False)
+    url = f"https://api.waqi.info/feed/{city_name}/?token={token}"
+    respuesta = requests.get(url)
+    data = respuesta.json()
+    if data['data'] != 'Unknown station':
+        udi = data['data']['idx']
+    else: 
+        udi = None
+        print("Estacion desconocida")
+    
+    registro = {"ciudad": city_name, "udi": udi, "data": data}
+    return registro
 
-# Datos generales
-print(f"📍 Ciudad: {data['data']['city']['name']}")
-print(f"🗓️ Fecha: {data['data']['time']['iso']}")
-print(f"🌫️ AQI actual (pm2.5): {data['data']['aqi']}")
-print(f"☁️ Contaminante dominante: {data['data']['dominentpol']}")
+def main():
+    
+    info = []
+    ciudades = ['santa-catarina','monterrey','guadalupe','apodaca','juarez','cadereyta','garcia','san-nicolas-de-los-garza','general-escobedo','san-pedro-garza-garcia']
+    while True:
+        op = int(input("Ingrese alguna opcion\n1. Buscar por nombre de ciudad\n2. Guardar la informacion\n3. Terminar\nSeleccionado: "))
+        
+        # busca las ciudades ingresadas en la variable ciudades
+        if op == 1:
+            for ciudad in ciudades:
+                datos = buscar_aqi(ciudad)
+                info.append(datos)
+        
+        # guarda la informacion de todas las ciudades 
+        elif op == 2:
+            # guardar la informacion en crudo
+            info_amm = open(r"C:\Users\juang\Documents\FCFM\2do Semestre\Programacion Basica\PIA\info_amm.txt", "w")
+            info_amm.write(str(info))
+            info_amm.close()
+        
+        # cerrar el programa
+        elif op == 3:
+            break
 
-# Datos de contaminantes actuales
-print("\n📊 Contaminantes actuales:")
-for contaminante, valor in data['data']['iaqi'].items():
-    print(f"  {contaminante.upper()}: {valor['v']}")
-
-# Pronóstico de PM2.5
-print("\n🔮 Pronóstico PM2.5 para los próximos días:")
-for dia in data['data']['forecast']['daily']['pm25']:
-    print(f"  {dia['day']}: promedio {dia['avg']}, máx {dia['max']}, mín {dia['min']}")
+main()
