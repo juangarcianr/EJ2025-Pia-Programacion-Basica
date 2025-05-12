@@ -24,6 +24,55 @@ def buscar_aqi(city_name):
     registro = {"ciudad": city_name, "udi": udi, "data": data}
     return registro
 
+def mostrar_por_contaminante(info):
+    while True:
+        cont = int(input(f"\nQue contaminante desea buscar en el AMM:\n1. co: Monóxido de carbono.\n2. no2: Dióxido de nitrógeno.\n3. o3: Ozono.\n4. pm10, pm25: Material particulado.\n5. so2: Dióxido de azufre.\n6. Terminar de buscar\nSeleccionaste: "))
+        if cont == 1:
+            for ciudad in info:
+                print(f"{ciudad['ciudad']} co: {ciudad['data']['data']['iaqi']['co']['v']}")
+        elif cont == 2:
+            for ciudad in info:
+                print(f"{ciudad['ciudad']} no2: {ciudad['data']['data']['iaqi']['no2']['v']}")
+        elif cont == 3:
+            for ciudad in info:
+                print(f"{ciudad['ciudad']} o3: {ciudad['data']['data']['iaqi']['o3']['v']}")
+        elif cont == 4:
+            for ciudad in info:
+                print(f"{ciudad['ciudad']} pm10: {ciudad['data']['data']['iaqi']['pm10']['v']}")
+            for ciudad in info:
+                print(f"{ciudad['ciudad']} pm25: {ciudad['data']['data']['iaqi']['pm10']['v']}")                
+        elif cont == 5:
+            for ciudad in info:
+                print(f"{ciudad['ciudad']} so2: {ciudad['data']['data']['iaqi']['so2']['v']}")
+        elif cont == 6:
+            return
+        else:
+            print("No existe esa opcion")
+
+def mostrar_aqi_total(info):
+    suma = 0
+    for ciudad in info:
+        print(f"{ciudad['ciudad']} aqi: {ciudad['data']['data']['aqi']}")
+        clasificar_aqi(ciudad['data']['data']['aqi'])
+        suma += ciudad['data']['data']['aqi']
+    
+    print(f"Promedio: {suma/len(info)}")
+
+def clasificar_aqi(aqi):
+    if aqi < 50:
+        print(f"La calidad del aire es buena")
+    elif 51 < aqi <= 100:
+        print(f"La calidad del aire es moderada")
+    elif 100 < aqi <= 150:
+        print(f"La calidad del aire es no saludable para grupos sensibles")
+    elif 150 < aqi <= 200:
+        print(f"La calidad del aire no es saludable")
+    elif 200 < aqi <= 300:
+        print(f"la calidad del aire no es nada saludable")
+    else:
+        print(f"La calidad del aire es peligrosa")
+    return
+
 def main():
     
     info = []
