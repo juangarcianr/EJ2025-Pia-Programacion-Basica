@@ -1,13 +1,37 @@
-# cambiar la ruta a en la que se tiene guardado el toquen !!!!!!!!!!!!!!
-# y en la que se guarda los datos en crudo
-# y tener instalada la libreria de requests
-
 # PARA IDENTIFICAR LA UID DE CADA ESTACION EN LAS CIUDADES DE LA ZONA METROPOLITANA
 
 import requests
 
-def buscar_aqi(city_name):
+def generar_grafico_de_pronostico(info):
+
+
     
+def generar_grafico_de_barras(info):
+    # generar listado de etiquetas (ciudades)
+    import matplotlib.pyplot as plt 
+    
+    # crear la lista de etiqueas, nombres de las ciudades
+    
+    etiquetas = []
+    for ciudad in info:
+        city = ciudad["ciudad"]
+        etiquetas.append(city)
+    valores = []
+    
+    # crear la lista de valores
+    for ciudad in info:
+        val = ciudad["data"]["data"]["aqi"]
+        valores.append(val)
+    plt.figure(figsize=(12,6))
+    plt.bar(etiquetas, valores, color='orange') 
+    plt.title("Indice de calidad del aire por ciudad en el AMM")
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.show()
+
+
+def buscar_aqi(city_name):
+    import requests
     # Leer el token
     with open(r"C:\Users\juang\Documents\FCFM\2do Semestre\Programacion Basica\PIA\token_aqicn.txt", "r") as f:
         token = f.read().strip()
@@ -24,6 +48,30 @@ def buscar_aqi(city_name):
     registro = {"ciudad": city_name, "udi": udi, "data": data}
     return registro
 
+def clasificar_aqi(aqi):
+    if aqi < 50:
+        print(f"La calidad del aire es buena")
+    elif 51 < aqi <= 100:
+        print(f"La calidad del aire es moderada")
+    elif 100 < aqi <= 150:
+        print(f"La calidad del aire es no saludable para grupos sensibles")
+    elif 150 < aqi <= 200:
+        print(f"La calidad del aire no es saludable")
+    elif 200 < aqi <= 300:
+        print(f"la calidad del aire no es nada saludable")
+    else:
+        print(f"La calidad del aire es peligrosa")
+    return
+
+def mostrar_aqi_total(info):
+    suma = 0
+    for ciudad in info:
+        print(f"{ciudad['ciudad']} aqi: {ciudad['data']['data']['aqi']}")
+        clasificar_aqi(ciudad['data']['data']['aqi'])
+        suma += ciudad['data']['data']['aqi']
+    
+    print(f"Promedio: {suma/len(info)}")
+    
 def mostrar_por_contaminante(info):
     while True:
         cont = int(input(f"\nQue contaminante desea buscar en el AMM:\n1. co: Monóxido de carbono.\n2. no2: Dióxido de nitrógeno.\n3. o3: Ozono.\n4. pm10, pm25: Material particulado.\n5. so2: Dióxido de azufre.\n6. Terminar de buscar\nSeleccionaste: "))
@@ -49,36 +97,12 @@ def mostrar_por_contaminante(info):
         else:
             print("No existe esa opcion")
 
-def mostrar_aqi_total(info):
-    suma = 0
-    for ciudad in info:
-        print(f"{ciudad['ciudad']} aqi: {ciudad['data']['data']['aqi']}")
-        clasificar_aqi(ciudad['data']['data']['aqi'])
-        suma += ciudad['data']['data']['aqi']
-    
-    print(f"Promedio: {suma/len(info)}")
-
-def clasificar_aqi(aqi):
-    if aqi < 50:
-        print(f"La calidad del aire es buena")
-    elif 51 < aqi <= 100:
-        print(f"La calidad del aire es moderada")
-    elif 100 < aqi <= 150:
-        print(f"La calidad del aire es no saludable para grupos sensibles")
-    elif 150 < aqi <= 200:
-        print(f"La calidad del aire no es saludable")
-    elif 200 < aqi <= 300:
-        print(f"la calidad del aire no es nada saludable")
-    else:
-        print(f"La calidad del aire es peligrosa")
-    return
-
 def main():
     
     info = []
     ciudades = ['santa-catarina','monterrey','guadalupe','apodaca','juarez','cadereyta','garcia','san-nicolas-de-los-garza','general-escobedo','san-pedro-garza-garcia']
     while True:
-        op = int(input("Ingrese alguna opcion\n1. Buscar por nombre de ciudad\n2. Guardar la informacion\n3. Terminar\nSeleccionado: "))
+        op = int(input("Ingrese alguna opcion\n1. Generar info del AMM\n2. Guardar la informacion\n3. Mostrar informacion sobre la calidad del aire\nTerminar\nSeleccionado: "))
         
         # busca las ciudades ingresadas en la variable ciudades
         if op == 1:
@@ -93,8 +117,19 @@ def main():
             info_amm.write(str(info))
             info_amm.close()
         
-        # cerrar el programa
+        # Mostrar informacion sobre la calidad del aire
         elif op == 3:
+            mostrar_aqi_total(info)
+        
+        # Buscar informacion por contaminante
+        elif op == 4:
+        
+        
+        # Dar informacion y graficar el pronostico de las particulas pm10 y pm25
+        elif op == 5:
+        
+        
+        # cerrar el programa
+        elif op == 6:
             break
-
 main()
