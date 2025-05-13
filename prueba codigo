@@ -1,4 +1,5 @@
-# PARA IDENTIFICAR LA UID DE CADA ESTACION EN LAS CIUDADES DE LA ZONA METROPOLITANA
+# PIA ETAPA 1 PROGRAMACION BASICA
+# API DE LA CALIDAD DEL AIRE DE LA ZONA METROPOLITANA DE MTY
 
 def generar_grafico_de_barras(info,indicador):
     # generar listado de etiquetas (ciudades)
@@ -139,32 +140,35 @@ def mostrar_por_contaminante(info):
                 print(f"Dato no disponible en {ciudad['ciudad']}")
         generar_grafico_de_barras(info,cont)
 
-def main():
+def main(info):
     
     info = []
     ciudades = ['santa-catarina','monterrey','guadalupe','apodaca','juarez','cadereyta','garcia','san-nicolas-de-los-garza','general-escobedo','san-pedro-garza-garcia']
     
     while True:
         
-        op = int(input("Ingrese alguna opcion\n1. Generar info del AMM\n2. Guardar la informacion\n3. Mostrar informacion sobre la calidad del aire\nTerminar\nSeleccionado: "))
+        op = int(input("Ingrese alguna opcion\n1. Generar info del AMM\n2. Guardar la informacion\n3. Mostrar informacion sobre la calidad del aire\n4. Buscar informacion por contaminante\n5. Ver pronosticos\n6. Terminar\nSeleccionado: "))
         
         # busca las ciudades ingresadas en la variable ciudades
         if op == 1:
             for ciudad in ciudades:
                 datos = buscar_aqi(ciudad)
                 info.append(datos)
+        
         # guarda la informacion de todas las ciudades 
         elif op == 2:
             # guardar la informacion en crudo
             info_amm = open(r"C:\Users\juang\Documents\FCFM\2do Semestre\Programacion Basica\PIA\info_amm.txt", "w")
             info_amm.write(str(info))
             info_amm.close()
+        
         # Mostrar informacion sobre la calidad del aire
         elif op == 3:
             mostrar_aqi_total(info)
+        
         # Buscar informacion por contaminante
         elif op == 4:
-            print("hola")
+            mostrar_por_contaminante(info)
         
         # Dar informacion y graficar el pronostico de las particulas pm10 y pm25
         elif op == 5:
