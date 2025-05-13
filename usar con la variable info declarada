@@ -141,6 +141,9 @@ def mostrar_por_contaminante(info):
                 print(f"Dato no disponible en {ciudad['ciudad']}")
         generar_grafico_de_barras(info,cont)
 
+def generar_fuentes():
+    archivo = open(r"C:\Users\DELL\Documents\pia")
+
 def main(info):
     
     # info = []
