@@ -1,5 +1,6 @@
 # PIA ETAPA 1 PROGRAMACION BASICA
 # API DE LA CALIDAD DEL AIRE DE LA ZONA METROPOLITANA DE MTY
+# Librerias que hay que descargar: matplotlib, requests
 
 def generar_grafico_de_barras(info,indicador):
     # generar listado de etiquetas (ciudades)
