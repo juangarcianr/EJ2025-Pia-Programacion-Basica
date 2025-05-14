@@ -120,9 +120,9 @@ def buscar_aqi(city_name):
     return registro
 
 def clasificar_aqi(aqi):
-    if aqi < 50:
+    if aqi <= 50:
         return "- la calidad del aire es buena"
-    elif 51 < aqi <= 100:
+    elif 51 <= aqi <= 100:
         return "- la calidad del aire es moderada"
     elif 100 < aqi <= 150:
         return "- la calidad del aire es no saludable para grupos sensibles"
@@ -138,21 +138,42 @@ def mostrar_aqi_total(info):
     import statistics 
     moda = []
     datos = []
+    city_max = ""
+    aqi_max = 0
+    city_min = ""
+    aqi_min = 0
     print("aqi")
     for ciudad in info:
         print(f"{ciudad['data']['data']['aqi']}\t{ciudad['ciudad']} {clasificar_aqi(ciudad['data']['data']['aqi'])}")
         datos.append(ciudad['data']['data']['aqi'])
+        # calcular la zona mayor
+        if ciudad['data']['data']['aqi'] > aqi_max:
+            city_max = ciudad['ciudad']
+            aqi_max = ciudad['data']['data']['aqi']
+        # calcular la zona menor
+        if aqi_min == 0:
+            aqi_min = ciudad['data']['data']['aqi']
+        else:
+            if ciudad['data']['data']['aqi'] < aqi_min:
+                city_min = ciudad['ciudad']
+                aqi_min = ciudad['data']['data']['aqi']
+    
     moda.append(clasificar_aqi(ciudad['data']['data']['aqi']))
     
     print(f"Promedio: {statistics.mean(datos)}")
     print(f"Moda: {statistics.mode(moda)}")
     print(f"Mediana: {statistics.median(datos)}")
+    print(f"Mediana: {statistics.median(datos)}")
+    print(f"Aqi mas alto: {max(datos)} en {city_max}")
+    print(f"Aqi mas bajo: {min(datos)} en {city_min}")
+    print(f"La varianza de es {statistics.variance(datos)}")
+    print(f"La desviacion estandar es de {statistics.stdev(datos)}")
     indicador = 'aqi'
     generar_grafico_de_barras(info,indicador)
     
 def mostrar_por_contaminante(info):
     while True:
-        cont = int(input(f"Que contaminante desea buscar en el AMM:\n1. co: Monóxido de carbono.\n2. no2: Dióxido de nitrógeno.\n3. o3: Ozono.\n4. pm10, pm25: Material particulado.\n5. so2: Dióxido de azufre.\n6. Terminar de buscar\nSeleccionaste: "))
+        cont = int(input(f"Que contaminante desea buscar en el AMM:\n1. co: Monóxido de carbono.\n2. no2: Dióxido de nitrógeno.\n3. o3: Ozono.\n4. pm10\n5. pm25\n6. so2: Dióxido de azufre.\n7. Terminar de buscar\nSeleccionaste: "))
         if cont == 1:
             cont = 'co'
         elif cont == 2:
@@ -163,9 +184,9 @@ def mostrar_por_contaminante(info):
             cont = 'pm10'
         elif cont == 5:
             cont = 'pm25'
-        elif cont == 5:
-            cont = 'so2'
         elif cont == 6:
+            cont = 'so2'
+        elif cont == 7:
             return
         else:
             print("No existe esa opcion")
@@ -212,4 +233,5 @@ def main():
             print(f"La informacion presentada fue tomada de: ")
             generar_fuentes(info)
             break
-            
+
+main()
